@@ -1,4 +1,5 @@
 import express from 'express';
+import 'dotenv/config';
 import cors from 'cors';
 import { MongoClient, ObjectId, ServerApiVersion } from 'mongodb';
 
@@ -9,8 +10,7 @@ app.use(express.json());
 
 // MongoDB
 
-const uri =
-  'mongodb+srv://dbuser1:5TIcOy4wtuudJheR@node-mongo-crud.j9vef.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
+const uri = process.env.MONGO_URI;
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -20,7 +20,9 @@ const client = new MongoClient(uri, {
 const run = async () => {
   try {
     await client.connect();
-    const usersCollection = client.db('foodExpress').collection('users');
+    const usersCollection = client
+      .db(process.env.MONGO_DB_NAME)
+      .collection(process.env.MONGO_COLLECTION_NAME);
 
     // Get all users
     app.get('/users', async (req, res) => {
@@ -77,7 +79,6 @@ const run = async () => {
 };
 
 run().catch(console.dir);
-
 // MongoDB
 
 const port = process.env.PORT || 5000;
